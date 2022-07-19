@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const postRegister = async (req, res) => {
   try {
-    // destructuring information from user data
+    // destructure information from user data
     const { username, mail, password } = req.body;
 
     // check and make sure that this is a new user
