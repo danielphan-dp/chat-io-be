@@ -34,9 +34,15 @@ const postLogin = async (req, res) => {
       });
     }
 
+    // TODO: remove log when finish testing
+    console.log('user entered invalid credentials');
+
     // user entered invalid information
     return res.status(400).send('Invalid credentials. Please try again.');
   } catch (err) {
+    // TODO: remove log when finish testing
+    console.log(err);
+
     return res.status(500).send('Something went wrong. Please try again.');
   }
 };

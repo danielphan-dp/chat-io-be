@@ -8,9 +8,10 @@ const mongoose = require('mongoose');
 // --------------------------------
 require('dotenv').config();
 
-// -------------------
-// | Retrieve Routes |
-// -------------------
+// ---------------------
+// | Set up namespaces |
+// ---------------------
+const socketServer = require('./socketServer');
 const authRoutes = require('./routes/authRoutes');
 
 // --------------
@@ -31,6 +32,7 @@ function initializeServer() {
   return http.createServer(app);
 }
 const server = initializeServer();
+socketServer.registerSocketServer(server);
 
 // ---------------------------------
 // | Set up MongoDB and run server |
