@@ -12,11 +12,13 @@ const updateFriendsPendingInvitations = async ({ userId }) => {
     // find all active connections of specific userId
     const receiverList = serverStore.getActiveConnections({ userId });
 
+    // TODO: remove when finished testing
     console.log('RECEIVER LIST');
     console.log(receiverList);
 
     // emit to all connected clients about the friend invitation
 
+    // TODO: remove when finished testing
     console.log('SENDING TO ALL CLIENTS');
 
     const io = serverStore.getSocketServerInstance();
