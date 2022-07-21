@@ -4,38 +4,50 @@ const http = require('http');
 const mongoose = require('mongoose');
 
 // --------------------------------
-// | Retrieve environment configs |
+// | Retrieve Environment Configs |
 // --------------------------------
 require('dotenv').config();
 
-// ---------------------
-// | Set up namespaces |
-// ---------------------
+// ----------------------------
+// | Retrieve SocketIO Server |
+// ----------------------------
 const socketServer = require('./socketServer');
+
+// -----------------------
+// | Retrieve All Routes |
+// -----------------------
 const authRoutes = require('./routes/authRoutes');
+const friendInvitationRoutes = require('./routes/friendInvitationRoutes');
 
 // --------------
-// | PORT setup |
+// | PORT Setup |
 // --------------
 // - process.env.PORT: used when hosted (provided by host)
 // - process.env.API_PORT: used when running locally (specified in .env)
 const PORT = process.env.PORT || process.env.API_PORT;
 
 // ---------------------
-// | Initialize server |
+// | Initialize Server |
 // ---------------------
 function initializeServer() {
+  // initialize express application
   const app = express();
   app.use(express.json());
   app.use(cors());
+
+  // add routes
   app.use('/api/auth', authRoutes);
+  app.use('/api/friend-invitation', friendInvitationRoutes);
+
+  // create and return the server
   return http.createServer(app);
 }
+
 const server = initializeServer();
 socketServer.registerSocketServer(server);
 
 // ---------------------------------
-// | Set up MongoDB and run server |
+// | Set up MongoDB and Run Server |
 // ---------------------------------
 mongoose
   .connect(process.env.MONGO_URI)

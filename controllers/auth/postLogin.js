@@ -1,7 +1,22 @@
+// -------------------
+// | Database Access |
+// -------------------
 const User = require('../../models/user');
+
+// --------------------
+// | Encryption Tools |
+// --------------------
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// --------------------
+// | Helper Functions |
+// --------------------
+// TODO: refactor to helper functions
+
+// -------------------------------
+// | Login Account Functionality |
+// -------------------------------
 const postLogin = async (req, res) => {
   try {
     // destructure information from user data
