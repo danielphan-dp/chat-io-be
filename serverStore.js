@@ -44,8 +44,6 @@ const removeConnectedUser = ({ socketId, userId }) => {
 };
 
 const getActiveConnections = ({ socketId, userId }) => {
-  console.log(`USER ID: ${userId}`);
-
   const activeConnections = [];
   connectedUsers.forEach((value, key) => {
     if (value.userId === userId) {
@@ -53,6 +51,16 @@ const getActiveConnections = ({ socketId, userId }) => {
     }
   });
   return activeConnections;
+};
+
+const getOnlineUsers = () => {
+  const onlineUsers = [];
+
+  connectedUsers.forEach((value, key) => {
+    onlineUsers.push({ socketId: key, userId: value.userId });
+  });
+
+  return onlineUsers;
 };
 
 // ----------------------
@@ -67,4 +75,5 @@ module.exports = {
   addNewConnectedUser,
   removeConnectedUser,
   getActiveConnections,
+  getOnlineUsers,
 };
