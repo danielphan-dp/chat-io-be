@@ -4,12 +4,14 @@ const friendsUpdate = require('./updates/friends');
 const newConnectionHandler = async (socket, io) => {
   const userDetails = socket.user;
 
+  // Cache the online user
   serverStore.addNewConnectedUser({
     socketId: socket.id,
     userId: userDetails.userId,
   });
 
-  // update pending friends invitation list
+  // INITIAL UPDATES
+  friendsUpdate.updateFriends({ userId: userDetails.userId });
   friendsUpdate.updateFriendsPendingInvitations({ userId: userDetails.userId });
 };
 

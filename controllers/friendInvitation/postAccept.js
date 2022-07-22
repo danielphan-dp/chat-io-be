@@ -50,6 +50,12 @@ const postAccept = async (req, res) => {
 
     // SENDING UPDATES TO ALL CONNECTED CLIENTS
     // update list of the friends if the users are online
+    friendsUpdates.updateFriends({
+      userId: senderId.toString(),
+    });
+    friendsUpdates.updateFriends({
+      userId: receiverId.toString(),
+    });
 
     // update pending invitations
     friendsUpdates.updateFriendsPendingInvitations({
