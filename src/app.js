@@ -6,11 +6,17 @@ const friendInvitationRoutes = require('./routes/friendInvitation.route');
 // create Express app instance
 const app = express();
 
+// parse json request body
+app.use(express.json());
+
+// parse urlencoded request body
+app.use(express.urlencoded({ extended: true }));
+
 // enable cors
 app.use(cors());
-app.options('*', cors());
+// app.options('*', cors());
 
-// register routes
+// api routes
 app.use('/api/auth', authRoutes);
 app.use('/api/friend-invitation', friendInvitationRoutes);
 

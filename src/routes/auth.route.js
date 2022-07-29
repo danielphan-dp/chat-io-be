@@ -11,26 +11,27 @@ const authController = require('../controllers/auth.controller');
 const registerSchema = Joi.object({
   username: Joi.string()
 		.min(3)
-		.max(12)
+		.max(15)
+		.required(),
+	mail: Joi.string()
+		.email()
 		.required(),
   password: Joi.string()
     .min(6)
     .max(30)
-    .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$'))
+    // .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$'))
     .required(),
-  mail: Joi.string()
-		.email()
-		.required(),
 });
 
 // prettier-ignore
 const loginSchema = Joi.object({
+	mail: Joi.string()
+		.email()
+		.required(),
   password: Joi.string()
 		.min(6)
-		.max(12)
-		.required(),
-  mail: Joi.string()
-		.email()
+		.max(30)
+		// .pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$'))
 		.required(),
 });
 

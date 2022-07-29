@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const messageSchema = new mongoose.Schema({
   author: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
   },
   content: {

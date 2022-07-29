@@ -1,23 +1,19 @@
 const http = require('http');
 const mongoose = require('mongoose');
 
-// Express app
-const app = require('./app');
-
-// environment variables
+// configs
 require('dotenv').config();
-
-// port setup
 const PORT = process.env.PORT || process.env.API_PORT;
 
-// api server
+// http server
+const app = require('./app');
 const server = http.createServer(app);
 
 // socket server
-const socketServer = require('./socketServer');
-socketServer.registerSocketServer(server);
+// const socketServer = require('./socketServer');
+// socketServer.registerSocketServer(server);
 
-// start server upon success MongoDB connection
+// start server upon successful MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
