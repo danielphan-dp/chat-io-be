@@ -1,8 +1,8 @@
 // -------------------
 // | Database Access |
 // -------------------
-const User = require('../../models/user');
-const FriendInvitation = require('../../models/friendInvitation');
+const User = require('../../models/User.model');
+const FriendInvitation = require('../../models/FriendInvitation.model');
 const friendsUpdates = require('../../socketHandlers/updates/friends');
 
 // --------------------
@@ -24,9 +24,7 @@ const postInvite = async (req, res) => {
   // ASSERTION
   // check if friend that we would like to invite is not user
   if (mail.toLowerCase() === targetMailAddress.toLowerCase()) {
-    return res
-      .status(409)
-      .send('Sorry. You cannot send a friend request to yourself.');
+    return res.status(409).send('Sorry. You cannot send a friend request to yourself.');
   }
 
   // ASSERTION
@@ -36,11 +34,7 @@ const postInvite = async (req, res) => {
   });
 
   if (!targetUser) {
-    return res
-      .status(404)
-      .send(
-        `User with email ${targetMailAddress} not found. Please check mail address.`
-      );
+    return res.status(404).send(`User with email ${targetMailAddress} not found. Please check mail address.`);
   }
 
   // ASSERTION
@@ -51,23 +45,15 @@ const postInvite = async (req, res) => {
   });
 
   if (invitationAlreadyReceived) {
-    return res
-      .status(409)
-      .send(
-        `Friend invitation has already been sent to user with e-mail ${targetMailAddress}.`
-      );
+    return res.status(409).send(`Friend invitation has already been sent to user with e-mail ${targetMailAddress}.`);
   }
 
   // ASSERTION
   // check if the sending user and the target users are already friends
-  const usersAlreadyFriends = targetUser.friends.find(
-    (friendId) => friendId.toString() === userId.toString()
-  );
+  const usersAlreadyFriends = targetUser.friends.find((friendId) => friendId.toString() === userId.toString());
 
   if (usersAlreadyFriends) {
-    return res
-      .status(409)
-      .send('Friend already added. Please check friends list.');
+    return res.status(409).send('Friend already added. Please check friends list.');
   }
 
   // ----- ALL ASSERTION PASSED -----

@@ -1,15 +1,6 @@
-// -----------------------------------
-// | Server Caches and Global States |
-// -----------------------------------
-// Cache of all users (using hashmap)
 const connectedUsers = new Map();
-
-// SocketIO server. Accessible internally inside the server store
 let io = null;
 
-// ------------------------------------
-// | Server State Accessing Functions |
-// ------------------------------------
 const setSocketServerInstance = (ioInstance) => {
   io = ioInstance;
 };
@@ -34,13 +25,7 @@ const removeConnectedUser = ({ socketId, userId }) => {
   if (!connectedUsers.has(socketId)) {
     return;
   }
-
-  // remove the user and socket from the cache
   connectedUsers.delete(socketId);
-
-  // LOG: remove when finished testing
-  console.log('User deleted. New connected users:');
-  console.log(connectedUsers);
 };
 
 const getActiveConnections = ({ socketId, userId }) => {
@@ -55,23 +40,21 @@ const getActiveConnections = ({ socketId, userId }) => {
 
 const getOnlineUsers = () => {
   const onlineUsers = [];
-
   connectedUsers.forEach((value, key) => {
-    onlineUsers.push({ socketId: key, userId: value.userId });
+    onlineUsers.push({
+      socketId: key,
+      userId: value.userId,
+    });
   });
-
   return onlineUsers;
 };
 
-// ----------------------
-// | Package and Export |
-// ----------------------
 module.exports = {
-  // SocketIO Server
+  // IO Access
   getSocketServerInstance,
   setSocketServerInstance,
 
-  // Users and Clients
+  // User Data Cache Access
   addNewConnectedUser,
   removeConnectedUser,
   getActiveConnections,

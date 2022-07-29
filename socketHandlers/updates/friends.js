@@ -1,5 +1,5 @@
-const User = require('../../models/user');
-const FriendInvitation = require('../../models/friendInvitation');
+const User = require('../../models/User.model');
+const FriendInvitation = require('../../models/FriendInvitation.model');
 const serverStore = require('../../serverStore');
 
 const updateFriendsPendingInvitations = async ({ userId }) => {

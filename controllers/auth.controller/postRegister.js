@@ -1,31 +1,15 @@
-// -------------------
-// | Database Access |
-// -------------------
-const User = require('../../models/user');
-
-// --------------------
-// | Encryption Tools |
-// --------------------
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const httpStatus = require('http-status');
+const User = require('../../models/User.model');
 
-// --------------------
-// | Helper Functions |
-// --------------------
-// TODO: refactor to helper functions
-
-// ----------------------------------
-// | Register Account Functionality |
-// ----------------------------------
 const postRegister = async (req, res) => {
   try {
-    // destructure information from user data
     const { username, mail, password } = req.body;
 
-    // check and make sure that this is a new user
     const userExists = await User.exists({ mail: mail.toLowerCase() });
     if (userExists) {
-      return res.status(409).send('E-mail already in use.');
+      return res.status(httpStatus.CONFLICT).send('E-mail already in use.');
     }
 
     // encrypt the password
@@ -57,13 +41,12 @@ const postRegister = async (req, res) => {
         token: token,
         username: user.username,
         _id: user._id,
+        s,
       },
     });
   } catch (err) {
     console.log(err);
-    return res
-      .status(500)
-      .send('Error occurred when registering user. Please try again.');
+    return res.status(500).send('Error occurred when registering user. Please try again.');
   }
 };
 

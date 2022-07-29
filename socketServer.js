@@ -1,7 +1,5 @@
-// --------------
-// | Middleware |
-// --------------
-const authSocket = require('./middleware/authSocket');
+// middlewares
+const authSocket = require('./middlewares/authSocket');
 
 // ----------------------------------
 // | Network Communication Handlers |

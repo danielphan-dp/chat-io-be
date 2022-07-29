@@ -1,5 +1,5 @@
-const FriendInvitation = require('../../models/friendInvitation');
-const User = require('../../models/user');
+const FriendInvitation = require('../../models/FriendInvitation.model');
+const User = require('../../models/User.model');
 const friendsUpdates = require('../../socketHandlers/updates/friends');
 
 const isFriend = (user1, user2) => {

@@ -1,10 +1,7 @@
-const Conversation = require('../../models/conversation');
+const Conversation = require('../../models/Conversation.model');
 const serverStore = require('../../serverStore');
 
-const updateChatHistory = async (
-  conversationId,
-  toSpecifiedSocketId = null
-) => {
+const updateChatHistory = async (conversationId, toSpecifiedSocketId = null) => {
   console.log('--------- updating chat history');
 
   const conversation = await Conversation.findById(conversationId).populate({

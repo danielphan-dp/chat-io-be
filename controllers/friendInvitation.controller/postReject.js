@@ -1,4 +1,4 @@
-const FriendInvitation = require('../../models/friendInvitation');
+const FriendInvitation = require('../../models/FriendInvitation.model');
 const friendsUpdates = require('../../socketHandlers/updates/friends');
 
 const postReject = async (req, res) => {
