@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const friendInvitationSchema = new mongoose.Schema({
+const FriendInvitationSchema = new mongoose.Schema({
   senderId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -15,9 +15,6 @@ const friendInvitationSchema = new mongoose.Schema({
 /**
  * @typedef FriendInvitation
  */
-const FriendInvitation = mongoose.model(
-  'FriendInvitation',
-  friendInvitationSchema
-);
+const FriendInvitation = mongoose.model('FriendInvitation', FriendInvitationSchema);
 
 module.exports = FriendInvitation;

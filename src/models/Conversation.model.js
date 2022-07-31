@@ -1,18 +1,24 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const conversationSchema = new mongoose.Schema({
+const ConversationSchema = new Schema({
   participants: [
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
     },
   ],
   messages: [
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Message',
     },
   ],
 });
 
-module.exports = mongoose.model('Conversation', conversationSchema);
+/**
+ * @typedef Conversation
+ */
+const Conversation = mongoose.model('Conversation', ConversationSchema);
+
+module.exports = Conversation;

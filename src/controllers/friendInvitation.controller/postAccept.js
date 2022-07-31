@@ -1,6 +1,6 @@
-const FriendInvitation = require('../../models/FriendInvitation.model');
 const User = require('../../models/User.model');
-const friendsUpdates = require('../../socketHandlers/updates/friends');
+const FriendInvitation = require('../../models/FriendInvitation.model');
+const FriendsUpdateService = require('../../services/socket.services/update.services/friendsUpdate.service');
 
 const isFriend = (user1, user2) => {
   for (var i = 0; i < user1.friends.length; ++i) {
@@ -17,26 +17,21 @@ const usersAlreadyFriends = (user1, user2) => {
   return isFriend(user1, user2) && isFriend(user2, user1);
 };
 
+// TODO: refactor to using catch async
 const postAccept = async (req, res) => {
   try {
-    const { id } = req.body;
-    const { userId } = req.user;
+    const { body: id, user: userId } = req;
 
-    // DATABASE UPDATE
-    // remove invitation from friend pending list
+    // db update
     const invitation = await FriendInvitation.findById(id);
     if (!invitation) {
       return res.status(401).send('Error occurred. Please try again.');
     }
 
-    // DATABASE UPDATE
-    // add the users the friends list of one another
-    // retrieve users from database
+    // db update
     const { senderId, receiverId } = invitation;
     const senderUser = await User.findById(senderId);
     const receiverUser = await User.findById(receiverId);
-
-    // add users only when they are not already friends
     if (!usersAlreadyFriends(senderUser, receiverUser)) {
       senderUser.friends = [...senderUser.friends, receiverId];
       receiverUser.friends = [...receiverUser.friends, senderId];
@@ -44,27 +39,23 @@ const postAccept = async (req, res) => {
       await receiverUser.save();
     }
 
-    // DATABASE UPDATE
-    // delete the invitations from the invitations database
+    // db update
     await FriendInvitation.findByIdAndDelete(id);
 
-    // SENDING UPDATES TO ALL CONNECTED CLIENTS
-    // update list of the friends if the users are online
-    friendsUpdates.updateFriends({
+    // socket update (to all connected clients)
+    FriendsUpdateService.updateFriends({
       userId: senderId.toString(),
     });
-    friendsUpdates.updateFriends({
+    FriendsUpdateService.updateFriends({
+      userId: receiverId.toString(),
+    });
+    FriendsUpdateService.updateFriendsPendingInvitations({
       userId: receiverId.toString(),
     });
 
-    // update pending invitations
-    friendsUpdates.updateFriendsPendingInvitations({
-      userId: receiverId.toString(),
-    });
-
+    // notify client
     return res.status(200).send('Invitation successfully accepted!');
   } catch (err) {
-    console.log(err);
     return res.status(500).send('Something went wrong. Please try again.');
   }
 };

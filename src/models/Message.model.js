@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const messageSchema = new mongoose.Schema({
+const MessageSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -17,4 +17,9 @@ const messageSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Message', messageSchema);
+/**
+ * @typedef Message
+ */
+const Message = mongoose.model('Message', MessageSchema);
+
+module.exports = Message;

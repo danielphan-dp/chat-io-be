@@ -8,7 +8,6 @@ const User = require('../../models/User.model');
 // const { authService, userService, tokenService, emailService } = require('../../services');
 
 const postRegister = catchAsync(async (req, res) => {
-  console.log(req.body);
   const { mail, username, password } = req.body;
   if (await User.exists({ mail: mail.toLowerCase() })) {
     return res.status(httpStatus.CONFLICT).send('E-mail already in use.');
@@ -18,10 +17,7 @@ const postRegister = catchAsync(async (req, res) => {
     username: username,
     password: await bcrypt.hash(password, 10),
   });
-  const token = generateToken({
-    userId: user._id,
-    mail: mail,
-  });
+  const token = generateToken({ userId: user._id, mail: mail });
   return res.status(httpStatus.CREATED).json({
     // prettier-ignore
     userDetails: { // TODO: refactor to 'user'
@@ -30,7 +26,7 @@ const postRegister = catchAsync(async (req, res) => {
       username: user.username,
 			token: token, // TODO: refactor to match front-end logic
     },
-    token: token, // TODO: refactor to match front-end logic
+    // token: token, // TODO: refactor to match front-end logic
   });
 });
 

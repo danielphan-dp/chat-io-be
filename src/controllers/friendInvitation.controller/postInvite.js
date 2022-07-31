@@ -1,33 +1,16 @@
-// -------------------
-// | Database Access |
-// -------------------
 const User = require('../../models/User.model');
 const FriendInvitation = require('../../models/FriendInvitation.model');
-const friendsUpdates = require('../../socketHandlers/updates/friends');
+const FriendsUpdateService = require('../../services/socket.services/update.services/friendsUpdate.service');
 
-// --------------------
-// | Helper Functions |
-// --------------------
-// TODO: refactor checking functionalities to separate functions
-// TODO: if possible, refactor them into separate files
-// check if user not exists
-// check if invitation has already been sent
-// check if the sending user and the target users are already friends
-
-// ----------------------------------------
-// | Send Friend Invitation Functionality |
-// ----------------------------------------
 const postInvite = async (req, res) => {
   const { targetMailAddress } = req.body;
   const { userId, mail } = req.user;
 
-  // ASSERTION
   // check if friend that we would like to invite is not user
   if (mail.toLowerCase() === targetMailAddress.toLowerCase()) {
     return res.status(409).send('Sorry. You cannot send a friend request to yourself.');
   }
 
-  // ASSERTION
   // check if user not exist
   const targetUser = await User.findOne({
     mail: targetMailAddress.toLowerCase(),
@@ -37,7 +20,6 @@ const postInvite = async (req, res) => {
     return res.status(404).send(`User with email ${targetMailAddress} not found. Please check mail address.`);
   }
 
-  // ASSERTION
   // check if invitation has already been sent
   const invitationAlreadyReceived = await FriendInvitation.findOne({
     senderId: userId,
@@ -48,7 +30,6 @@ const postInvite = async (req, res) => {
     return res.status(409).send(`Friend invitation has already been sent to user with e-mail ${targetMailAddress}.`);
   }
 
-  // ASSERTION
   // check if the sending user and the target users are already friends
   const usersAlreadyFriends = targetUser.friends.find((friendId) => friendId.toString() === userId.toString());
 
@@ -56,7 +37,6 @@ const postInvite = async (req, res) => {
     return res.status(409).send('Friend already added. Please check friends list.');
   }
 
-  // ----- ALL ASSERTION PASSED -----
   // create and save the new invitation in database
   const newInvitation = await FriendInvitation.create({
     senderId: userId,
@@ -64,7 +44,7 @@ const postInvite = async (req, res) => {
   });
 
   // update friends invitations if other user is online
-  friendsUpdates.updateFriendsPendingInvitations({
+  FriendsUpdateService.updateFriendsPendingInvitations({
     userId: targetUser._id.toString(),
   });
 

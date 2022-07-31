@@ -1,25 +1,17 @@
+const httpStatus = require('http-status');
 const FriendInvitation = require('../../models/FriendInvitation.model');
-const friendsUpdates = require('../../socketHandlers/updates/friends');
+const FriendsUpdateService = require('../../services/socket.services/update.services/friendsUpdate.service');
 
 const postReject = async (req, res) => {
   try {
-    const { id } = req.body;
-    const { userId } = req.user;
-
-    // remove invitation from friend pending list
-    const invitationExists = await FriendInvitation.exists({ _id: id });
-
-    if (invitationExists) {
+    const { body: id, user: userId } = req;
+    if (await FriendInvitation.exists({ _id: id })) {
       await FriendInvitation.findByIdAndDelete(id);
     }
-
-    // update pending invitations
-    friendsUpdates.updateFriendsPendingInvitations({ userId });
-
-    return res.status(200).send('Invitation successfully rejected!');
+    FriendsUpdateService.updateFriendsPendingInvitations({ userId });
+    return res.status(httpStatus.OK).send('Friend invitation rejected.');
   } catch (err) {
-    console.log(err);
-    return res.status(500).send('Something went wrong. Please try again.');
+    return res.status(httpStatus.InternalServerError).send('Something went wrong. Please try again.');
   }
 };
 

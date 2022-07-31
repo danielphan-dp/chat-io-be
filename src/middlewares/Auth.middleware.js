@@ -1,5 +1,5 @@
-const httpStatus = require('http-status');
 const jwt = require('jsonwebtoken');
+const httpStatus = require('http-status');
 
 const verifyToken = (req, res, next) => {
   let token = req.body.token || req.query.token || req.headers['authorization'];
@@ -7,12 +7,13 @@ const verifyToken = (req, res, next) => {
     return res.status(httpStatus.FORBIDDEN).send('No token received.');
   }
   try {
-    const decodedToken = jwt.verify(token.replace(/^Bearer\s+/, ''), process.env.TOKEN_KEY);
-    req.user = decodedToken;
+    req.user = jwt.verify(token.replace(/^Bearer\s+/, ''), process.env.TOKEN_KEY);
   } catch (err) {
     return res.status(httpStatus.UNAUTHORIZED).send('Invalid Token.');
   }
   return next();
 };
 
-module.exports = verifyToken;
+module.exports = {
+  verifyToken,
+};

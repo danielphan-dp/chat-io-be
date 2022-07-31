@@ -1,11 +1,11 @@
 const express = require('express');
 const Joi = require('joi');
 const validator = require('express-joi-validation').createValidator({});
-const auth = require('../middlewares/auth');
 const { sendTestSuccessMessage } = require('./_utils/utils.test');
 
 const router = express.Router();
-const friendInvitationController = require('../controllers/friendInvitation.controller');
+const friendInvitationController = require('../controllers/FriendInvitation.controller');
+const auth = require('../middlewares/Auth.middleware');
 
 // prettier-ignore
 const postFriendInvitationSchema = Joi.object({
@@ -26,9 +26,9 @@ const rejectDecisionSchema = Joi.object({
 		.required(),
 });
 
-router.post('/invite', auth, validator.body(postFriendInvitationSchema), friendInvitationController.postInvite);
-router.post('/accept', auth, validator.body(inviteDecisionSchema), friendInvitationController.postAccept);
-router.post('/reject', auth, validator.body(rejectDecisionSchema), friendInvitationController.postReject);
-router.get('/test-auth', auth, sendTestSuccessMessage);
+router.post('/invite', auth.verifyToken, validator.body(postFriendInvitationSchema), friendInvitationController.postInvite);
+router.post('/accept', auth.verifyToken, validator.body(inviteDecisionSchema), friendInvitationController.postAccept);
+router.post('/reject', auth.verifyToken, validator.body(rejectDecisionSchema), friendInvitationController.postReject);
+router.get('/test-auth', auth.verifyToken, sendTestSuccessMessage);
 
 module.exports = router;

@@ -13,10 +13,7 @@ const postLogin = catchAsync(async (req, res) => {
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(httpStatus.BAD_REQUEST).send('Invalid credentials.');
   }
-  const token = generateToken({
-    userId: user._id,
-    mail: mail,
-  });
+  const token = generateToken({ userId: user._id, mail: mail });
   return res.status(httpStatus.OK).json({
     // prettier-ignore
     userDetails: { // TODO: refactor to 'user'
@@ -25,7 +22,7 @@ const postLogin = catchAsync(async (req, res) => {
         username: user.username,
         token: token, // TODO: refactor to match front-end logic
       },
-    token: token, // TODO: refactor to match front-end logic
+    // token: token, // TODO: refactor to match front-end logic
   });
 });
 

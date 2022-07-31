@@ -2,12 +2,12 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": ".\\src\\server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node server.js",
-		"start-node": "node server.js",
-    "start-nodemon": "nodemon server.js"
+    "start": "node ./src/server.js",
+    "start-node": "node .\\src\\server.js",
+    "start-nodemon": "nodemon .\\src\\server.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-joi-validation": "^5.0.1",
+    "http-status": "^1.5.2",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.5",

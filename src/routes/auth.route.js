@@ -1,11 +1,11 @@
 const express = require('express');
 const Joi = require('joi');
 const validator = require('express-joi-validation').createValidator({});
-const auth = require('../middlewares/auth');
 const { sendTestSuccessMessage } = require('./_utils/utils.test');
 
 const router = express.Router();
-const authController = require('../controllers/auth.controller');
+const authController = require('../controllers/Auth.controller');
+const auth = require('../middlewares/Auth.middleware');
 
 // prettier-ignore
 const registerSchema = Joi.object({
@@ -37,6 +37,6 @@ const loginSchema = Joi.object({
 
 router.post('/register', validator.body(registerSchema), authController.postRegister);
 router.post('/login', validator.body(loginSchema), authController.postLogin);
-router.get('/test-auth', auth, sendTestSuccessMessage);
+router.get('/test-auth', auth.verifyToken, sendTestSuccessMessage);
 
 module.exports = router;
