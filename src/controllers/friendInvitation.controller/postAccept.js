@@ -4,31 +4,26 @@ const FriendsUpdateService = require('../../services/socket.services/update.serv
 
 const isFriend = (user1, user2) => {
   for (var i = 0; i < user1.friends.length; ++i) {
-    const u1id = user1.friends[i]._id.toString();
-    const u2id = user2.id;
-    if (u1id === u2id) {
-      return true;
-    }
+    if (user1.friends[i]._id.toString() === user2.id) return true;
   }
   return false;
 };
 
-const usersAlreadyFriends = (user1, user2) => {
-  return isFriend(user1, user2) && isFriend(user2, user1);
-};
+const usersAlreadyFriends = (user1, user2) => isFriend(user1, user2) && isFriend(user2, user1);
 
 // TODO: refactor to using catch async
 const postAccept = async (req, res) => {
   try {
-    const { body: id, user: userId } = req;
+    const {
+      body: { id },
+      user: { userId },
+    } = req;
 
-    // db update
+    // db
     const invitation = await FriendInvitation.findById(id);
-    if (!invitation) {
-      return res.status(401).send('Error occurred. Please try again.');
-    }
+    if (!invitation) return res.status(401).send('Error occurred. Please try again.');
 
-    // db update
+    // db
     const { senderId, receiverId } = invitation;
     const senderUser = await User.findById(senderId);
     const receiverUser = await User.findById(receiverId);
@@ -39,21 +34,15 @@ const postAccept = async (req, res) => {
       await receiverUser.save();
     }
 
-    // db update
+    // db
     await FriendInvitation.findByIdAndDelete(id);
 
-    // socket update (to all connected clients)
-    FriendsUpdateService.updateFriends({
-      userId: senderId.toString(),
-    });
-    FriendsUpdateService.updateFriends({
-      userId: receiverId.toString(),
-    });
-    FriendsUpdateService.updateFriendsPendingInvitations({
-      userId: receiverId.toString(),
-    });
+    // socket update
+    FriendsUpdateService.updateFriends(senderId.toString());
+    FriendsUpdateService.updateFriends(receiverId.toString());
+    FriendsUpdateService.updateFriendsPendingInvitations(receiverId.toString());
 
-    // notify client
+    // api response
     return res.status(200).send('Invitation successfully accepted!');
   } catch (err) {
     return res.status(500).send('Something went wrong. Please try again.');

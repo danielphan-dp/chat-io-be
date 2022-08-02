@@ -19,7 +19,7 @@ const updateChatHistory = async (conversationId, toSpecifiedSocketId = null) => 
   }
 
   // initial update
-  const io = ServerStateService.getSocketServerInstance();
+  const io = ServerStateService.getIo();
   if (toSpecifiedSocketId) {
     return io.to(toSpecifiedSocketId).emit('direct-chat-history', {
       messages: conversation.messages,
@@ -29,9 +29,7 @@ const updateChatHistory = async (conversationId, toSpecifiedSocketId = null) => 
 
   // notify other users
   conversation.participants.forEach((userId) => {
-    const activeConnections = ServerStateService.getActiveConnections({
-      userId: userId.toString(),
-    });
+    const activeConnections = ServerStateService.getActiveClientsOfUser(userId.toString());
     activeConnections.forEach((socketId) => {
       io.to(socketId).emit('direct-chat-history', {
         messages: conversation.messages,

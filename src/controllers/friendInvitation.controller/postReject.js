@@ -4,11 +4,14 @@ const FriendsUpdateService = require('../../services/socket.services/update.serv
 
 const postReject = async (req, res) => {
   try {
-    const { body: id, user: userId } = req;
+    const {
+      body: { id },
+      user: { userId },
+    } = req;
     if (await FriendInvitation.exists({ _id: id })) {
       await FriendInvitation.findByIdAndDelete(id);
     }
-    FriendsUpdateService.updateFriendsPendingInvitations({ userId });
+    FriendsUpdateService.updateFriendsPendingInvitations(userId);
     return res.status(httpStatus.OK).send('Friend invitation rejected.');
   } catch (err) {
     return res.status(httpStatus.InternalServerError).send('Something went wrong. Please try again.');

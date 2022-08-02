@@ -1,20 +1,18 @@
 const User = require('../../../models/User.model');
 const FriendInvitation = require('../../../models/FriendInvitation.model');
-const serverStore = require('../../state.services/serverStore');
+const ServerStateService = require('../../state.services/serverStore');
 
 // TODO: refactor to using catch async
-const updateFriendsPendingInvitations = async ({ userId }) => {
+const updateFriendsPendingInvitations = async (userId) => {
   try {
-    const receiverList = serverStore.getActiveConnections({ userId });
-    if (receiverList.length === 0) {
-      return;
-    }
+    const receiverList = ServerStateService.getActiveClientsOfUser(userId);
+    if (receiverList.length === 0) return;
 
     const pendingInvitations = await FriendInvitation.find({
       receiverId: userId,
     }).populate('senderId', '_id username mail');
 
-    const io = serverStore.getSocketServerInstance();
+    const io = ServerStateService.getIo();
     receiverList.forEach((receiverSocketId) => {
       io.to(receiverSocketId).emit('friends-invitations', {
         pendingInvitations: pendingInvitations ? pendingInvitations : [],
@@ -26,9 +24,9 @@ const updateFriendsPendingInvitations = async ({ userId }) => {
 };
 
 // TODO: refactor to using catch async
-const updateFriends = async ({ userId }) => {
+const updateFriends = async (userId) => {
   try {
-    const receiverList = serverStore.getActiveConnections({ userId });
+    const receiverList = ServerStateService.getActiveClientsOfUser(userId);
     if (receiverList.length === 0) {
       return;
     }
@@ -50,7 +48,7 @@ const updateFriends = async ({ userId }) => {
       };
     });
 
-    const io = serverStore.getSocketServerInstance();
+    const io = ServerStateService.getIo();
     receiverList.forEach((receiverSocketId) => {
       io.to(receiverSocketId).emit('friends-list', {
         friends: friendsList ? friendsList : [],

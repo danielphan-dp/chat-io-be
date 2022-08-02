@@ -13,7 +13,10 @@ const setUpIoServerLogic = () => {
     // socket signals
     socket.on('direct-message', (data) => MessageService.sendDirectMessageHandler(socket, data));
     socket.on('direct-chat-history', (data) => MessageService.getDirectChatHistoryHandler(socket, data));
-    socket.on('disconnect', () => SocketConnectionService.clientConnectHandler(socket));
+    socket.on('room-create', () => MessageService.roomCreateHandler(socket));
+    socket.on('room-join', (data) => MessageService.roomJoinHandler(socket, data));
+    socket.on('room-leave', (data) => MessageService.roomLeaveHandler(socket, data));
+    socket.on('disconnect', () => SocketConnectionService.clientDisconnectHandler(socket));
   });
   SocketConnectionService.emitOnlineUsersWithPolling(io, 60 * 1000);
 };
