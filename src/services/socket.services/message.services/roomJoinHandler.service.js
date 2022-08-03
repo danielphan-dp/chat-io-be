@@ -9,6 +9,16 @@ const roomJoinHandler = (socket, data) => {
   const { roomId } = data;
   const roomDetails = ServerStateService.getActiveRoom(roomId);
   ServerStateService.joinActiveRoom(roomId, { userId, socketId });
+
+  // send information to users in room that they should prepare for incoming connection
+  roomDetails.participants.forEach((participant) => {
+    if (participant.socketId !== socketId) {
+      socket.to(participant.socketId).emit('conn-prepare', {
+        connUserSocketId: socketId,
+      });
+    }
+  });
+
   RoomsUpdateService.updateRooms();
 };
 

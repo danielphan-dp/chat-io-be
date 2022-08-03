@@ -44,7 +44,16 @@ const addRoom = (userId, socketId) => {
 const removeRoom = (userId, socketId) => {};
 
 const getActiveRooms = () => [...activeRooms];
-const getActiveRoom = (roomId) => ({ ...activeRooms.find((activeRoom) => activeRoom.roomId === roomId) });
+const getActiveRoom = (roomId) => {
+  const activeRoom = activeRooms.find((activeRoom) => activeRoom.roomId === roomId);
+  if (activeRoom) {
+    return {
+      ...activeRoom,
+    };
+  } else {
+    return null;
+  }
+};
 
 const joinActiveRoom = (roomId, newParticipant) => {
   const room = activeRooms.find((room) => room.roomId === roomId);
